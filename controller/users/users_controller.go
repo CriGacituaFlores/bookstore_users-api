@@ -1,17 +1,34 @@
 package users
 
 import (
-	"github.com/CriGacituaFlores/bookstore_users-api/utils/errors"
-	"github.com/CriGacituaFlores/bookstore_users-api/services"
-	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
+
 	"github.com/CriGacituaFlores/bookstore_users-api/domain/users"
+	services "github.com/CriGacituaFlores/bookstore_users-api/services/users"
+	"github.com/CriGacituaFlores/bookstore_users-api/utils/errors"
+	"github.com/gin-gonic/gin"
 )
 
-var(counter int)
+var (
+	counter int
+)
 
 func GetUser(c *gin.Context) {
-	c.String(http.StatusNotImplemented, "implement me!")
+	userId, userErr := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	if userErr != nil {
+		err := errors.NewBadRequestError("User id should be a number")
+		c.JSON(err.Status, err)
+		return
+	}
+
+	user, getErr := services.GetUser(userId)
+	if getErr != nil {
+		c.JSON(getErr.Status, getErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
 }
 
 func CreateUser(c *gin.Context) {
@@ -31,4 +48,3 @@ func CreateUser(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, result)
 }
-

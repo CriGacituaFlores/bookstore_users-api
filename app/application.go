@@ -2,9 +2,11 @@ package app
 
 import "github.com/gin-gonic/gin"
 
-var(router = gin.Default())
+var (
+	router = gin.Default()
+)
 
 func StartApplication() {
-	mapUrls();
+	mapUrls()
 	router.Run(":8000")
 }
